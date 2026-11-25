@@ -171,6 +171,7 @@ class SfPdfViewer extends StatefulWidget {
     this.enableDocumentLinkAnnotation = true,
     this.canShowPaginationDialog = true,
     this.canShowSignaturePadDialog = true,
+    this.enableFormFields = true,
     this.initialScrollOffset = Offset.zero,
     this.initialZoomLevel = 1,
     this.initialPageNumber = 1,
@@ -248,6 +249,7 @@ class SfPdfViewer extends StatefulWidget {
     this.enableDocumentLinkAnnotation = true,
     this.canShowPaginationDialog = true,
     this.canShowSignaturePadDialog = true,
+    this.enableFormFields = true,
     this.initialScrollOffset = Offset.zero,
     this.initialZoomLevel = 1,
     this.initialPageNumber = 1,
@@ -325,6 +327,7 @@ class SfPdfViewer extends StatefulWidget {
     this.enableDocumentLinkAnnotation = true,
     this.canShowPaginationDialog = true,
     this.canShowSignaturePadDialog = true,
+    this.enableFormFields = true,
     this.initialScrollOffset = Offset.zero,
     this.initialZoomLevel = 1,
     this.initialPageNumber = 1,
@@ -401,6 +404,7 @@ class SfPdfViewer extends StatefulWidget {
     this.enableDocumentLinkAnnotation = true,
     this.canShowPaginationDialog = true,
     this.canShowSignaturePadDialog = true,
+    this.enableFormFields = true,
     this.initialScrollOffset = Offset.zero,
     this.initialZoomLevel = 1,
     this.initialPageNumber = 1,
@@ -480,6 +484,7 @@ class SfPdfViewer extends StatefulWidget {
     this.enableDocumentLinkAnnotation = true,
     this.canShowPaginationDialog = true,
     this.canShowSignaturePadDialog = true,
+    this.enableFormFields = true,
     this.initialScrollOffset = Offset.zero,
     this.initialZoomLevel = 1,
     this.initialPageNumber = 1,
@@ -911,6 +916,14 @@ class SfPdfViewer extends StatefulWidget {
   ///
   /// Note: This property will also hide the built-in signature editing context menu when the value is set to “false”.
   final bool canShowSignaturePadDialog;
+
+  /// Indicates whether the PDF document's own (AcroForm) form fields are
+  /// loaded and rendered. The default value is true.
+  ///
+  /// When false, the document form fields are not retrieved, so they are not
+  /// rendered and are not available via [PdfViewerController.getFormFields].
+  /// The value is applied when the document is loaded.
+  final bool enableFormFields;
 
   /// Called when the text is selected or deselected in [SfPdfViewer].
   ///
@@ -2262,7 +2275,9 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
           CancelableOperation<PdfDocument?>.fromFuture(_getPdfFile(_pdfBytes));
       _document = await _pdfDocumentLoadCancellableOperation?.value;
       if (_document != null) {
-        _retrieveFormFieldsDetails();
+        if (widget.enableFormFields) {
+          _retrieveFormFieldsDetails();
+        }
         _retrieveAnnotations();
         _pdfTextExtractor = PdfTextExtractor(_document!);
         if (!kIsWeb) {
